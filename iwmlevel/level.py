@@ -75,6 +75,8 @@ class Level:
 		xml_head.find('colors').text = colors_string
 
 		xml_objects = SubElement(xml_map, 'objects')
+		for level_object in self.objects:
+			xml_objects.append(level_object.to_xml())
 
 		return xml_map
 
