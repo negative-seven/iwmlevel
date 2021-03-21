@@ -1,6 +1,8 @@
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
+from .event import Event
+
 
 class LevelObject:
 	def __init__(self, type_id: int, x = 0, y = 0, parameters = None, *, slot = None, events = None,
@@ -45,3 +47,31 @@ class LevelObject:
 
 	def to_xml_string(self) -> str:
 		return ElementTree.tostring(self.to_xml(), encoding='utf-8').decode('utf-8')
+
+	@staticmethod
+	def from_xml(xml_object: Element):
+		level_object = LevelObject(0)
+
+		for key, value in xml_object.attrib.items():
+			if key == 'type':
+				level_object.type_id = int(value)
+			elif key == 'x':
+				level_object.x = int(value)
+			elif key == 'y':
+				level_object.y = int(value)
+			elif key == 'slot':
+				level_object.slot = int(value)
+
+		for child in xml_object:
+			if child.tag == 'event':
+				level_object.events.append(Event.from_xml(child))
+			elif child.tag == 'param':
+				level_object.parameters[child.attrib['key']] = int(child.attrib['val'])
+			elif child.tag == 'obj':
+				level_object.slotted_objects.append(LevelObject.from_xml(child))
+
+		return level_object
+
+	@staticmethod
+	def from_xml_string(xml_string: str):
+		return LevelObject.from_xml(ElementTree.fromstring(xml_string))

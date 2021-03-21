@@ -1,6 +1,8 @@
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
+from .action import Action
+
 
 class Event:
 	def __init__(self, id: int, parameters = None):
@@ -27,3 +29,20 @@ class Event:
 
 	def to_xml_string(self) -> str:
 		return ElementTree.tostring(self.to_xml(), encoding='utf-8').decode('utf-8')
+
+	@staticmethod
+	def from_xml(xml_event: Element):
+		event = Event(0)
+		event.id = int(xml_event.attrib['eventIndex'])
+
+		for child in xml_event:
+			if child.tag == 'param':
+				event.parameters[child.attrib['key']] = int(child.attrib['val'])
+			elif child.tag == 'event':
+				event.actions.append(Action.from_xml(child))
+
+		return event
+
+	@staticmethod
+	def from_xml_string(xml_string: str):
+		return Event.from_xml(ElementTree.fromstring(xml_string))

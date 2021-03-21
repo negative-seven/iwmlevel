@@ -23,3 +23,18 @@ class Action:
 
 	def to_xml_string(self) -> str:
 		return ElementTree.tostring(self.to_xml(), encoding='utf-8').decode('utf-8')
+
+	@staticmethod
+	def from_xml(xml_action: Element):
+		action = Action(0)
+		action.id = int(xml_action.attrib['eventIndex'])
+
+		for child in xml_action:
+			if child.tag == 'param':
+				action.parameters[child.attrib['key']] = int(child.attrib['val'])
+
+		return action
+
+	@staticmethod
+	def from_xml_string(xml_string: str):
+		return Action.from_xml(ElementTree.fromstring(xml_string))

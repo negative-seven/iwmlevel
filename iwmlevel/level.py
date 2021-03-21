@@ -1,8 +1,10 @@
+import io
 import struct
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
 from .graphics_data import GraphicsData
+from .levelobject import LevelObject
 
 
 class Level:
@@ -55,7 +57,7 @@ class Level:
 		colors_string = ''
 		def colors_string_append_integer(x: int):
 			nonlocal colors_string
-			colors_string += x.to_bytes(4, byteorder='little').hex().upper()
+			colors_string += struct.pack('i', x).hex().upper()
 		def colors_string_append_float(x: float):
 			nonlocal colors_string
 			colors_string += struct.pack('d', x).hex().upper()
@@ -89,3 +91,72 @@ class Level:
 	def save(self, filepath: str) -> None:
 		with open(filepath, 'w') as f:
 			f.write(self.to_xml_string())
+
+	@staticmethod
+	def from_xml(xml_map: Element):
+		level = Level()
+
+		xml_head = xml_map.find('head')
+
+		for xml_head_subelement in xml_head:
+			field_name = xml_head_subelement.tag
+			field_value = xml_head_subelement.text
+
+			if field_name == 'name':
+				level.name = field_value
+			elif field_name == 'version':
+				level.version = int(field_value)
+			elif field_name == 'tileset':
+				level.block_0_graphics.type_id = int(field_value)
+			elif field_name == 'tileset2':
+				level.block_1_graphics.type_id = int(field_value)
+			elif field_name == 'bg':
+				level.background_graphics.type_id = int(field_value)
+			elif field_name == 'spikes':
+				level.spike_graphics.type_id = int(field_value)
+			elif field_name == 'width':
+				level.size[0] = int(field_value) // Level.SCREEN_WIDTH
+			elif field_name == 'height':
+				level.size[1] = int(field_value) // Level.SCREEN_HEIGHT
+			elif field_name == 'colors':
+				colors_string = field_value
+			elif field_name == 'scroll_mode':
+				level.screen_lock = bool(int(field_value))
+			elif field_name == 'music':
+				level.music_id = int(field_value)
+			elif field_name == 'num_objects':
+				continue # ignore
+
+		colors_string_stream = io.StringIO(colors_string)
+		def colors_string_read_integer():
+			return struct.unpack('i', bytes.fromhex(colors_string_stream.read(8)))[0]
+		def colors_string_read_float():
+			return struct.unpack('d', bytes.fromhex(colors_string_stream.read(16)))[0]
+		colors_string_read_integer() # probably 2d array identifier
+		colors_string_read_integer() # array height
+		colors_string_read_integer() # array width
+		for get_inverted_flag in (False, True):
+			for hsv_index in range(3):
+				for graphics_data in (
+						level.block_0_graphics,
+						level.background_graphics,
+						level.spike_graphics,
+						level.block_1_graphics,
+				):
+					colors_string_read_integer()
+					if get_inverted_flag:
+						graphics_data.color_hsv_inverted[hsv_index] = colors_string_read_float() > 0.5
+					else:
+						hsv_attribute_name = ['hue', 'saturation', 'value'][hsv_index]
+						setattr(graphics_data.color, hsv_attribute_name, colors_string_read_float())
+
+		xml_objects = xml_map.find('objects')
+
+		for xml_object in xml_objects:
+			level.objects.append(LevelObject.from_xml(xml_object))
+
+		return level
+
+	@staticmethod
+	def from_xml_string(xml_string: str):
+		return Level.from_xml(ElementTree.fromstring(xml_string))
