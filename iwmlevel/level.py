@@ -9,7 +9,10 @@ class Level:
 	SCREEN_WIDTH = 800
 	SCREEN_HEIGHT = 608
 
-	def __init__(self, name = '', size = (1, 1), *, version = 76, screen_lock = False, music_id = 0):
+	def __init__(self, name = '', size = None, *, version = 76, screen_lock = False, music_id = 0):
+		if size is None:
+			size = [1, 1]
+
 		self.name = name
 		self.version = version
 		self.block_0_graphics = GraphicsData()

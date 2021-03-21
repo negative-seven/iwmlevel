@@ -3,7 +3,10 @@ from xml.etree.ElementTree import Element, SubElement
 
 
 class Action:
-	def __init__(self, id: int, parameters = dict()):
+	def __init__(self, id: int, parameters = None):
+		if parameters is None:
+			parameters = dict()
+			
 		self.id = id
 		self.parameters = parameters
 

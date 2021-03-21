@@ -3,7 +3,15 @@ from xml.etree.ElementTree import Element, SubElement
 
 
 class LevelObject:
-	def __init__(self, type_id: int, x = 0, y = 0, parameters = dict(), *, slot = None, events = [], slotted_objects = []):
+	def __init__(self, type_id: int, x = 0, y = 0, parameters = None, *, slot = None, events = None,
+				 slotted_objects=None):
+		if parameters is None:
+			parameters = dict()
+		if events is None:
+			events = []
+		if slotted_objects is None:
+			slotted_objects = []
+
 		self.type_id = type_id
 		self.x = x
 		self.y = y
