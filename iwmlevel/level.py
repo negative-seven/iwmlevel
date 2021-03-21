@@ -17,7 +17,7 @@ class Level:
 		self.background_graphics = GraphicsData()
 		self.spike_graphics = GraphicsData()
 		self.size = size
-		self.scroll_mode_id = 0
+		self.screen_lock = False
 		self.music_id = 0
 		self.objects = []
 
@@ -42,7 +42,7 @@ class Level:
 			('width', self.get_pixel_width()),
 			('height', self.get_pixel_height()),
 			('colors', None), # handled later
-			('scroll_mode', self.scroll_mode_id),
+			('scroll_mode', int(self.screen_lock)),
 			('music', self.music_id),
 			('num_objects', len(self.objects)),
 		]:
