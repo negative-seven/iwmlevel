@@ -7,6 +7,7 @@ class LevelObject:
 		self.type_id = type_id
 		self.x = x
 		self.y = y
+		self.events = []
 		self.parameters = parameters
 
 	def to_xml(self) -> Element:
@@ -14,6 +15,9 @@ class LevelObject:
 		xml_object.attrib['type'] = str(self.type_id)
 		xml_object.attrib['x'] = str(self.x)
 		xml_object.attrib['y'] = str(self.y)
+
+		for event in self.events:
+			xml_object.append(event.to_xml())
 
 		for key, value in self.parameters.items():
 			xml_parameter = SubElement(xml_object, 'param')
