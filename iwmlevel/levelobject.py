@@ -3,14 +3,14 @@ from xml.etree.ElementTree import Element, SubElement
 
 
 class LevelObject:
-	def __init__(self, type_id: int, x = 0, y = 0, parameters = dict(), slot = None):
+	def __init__(self, type_id: int, x = 0, y = 0, parameters = dict(), *, slot = None, events = [], slotted_objects = []):
 		self.type_id = type_id
 		self.x = x
 		self.y = y
 		self.slot = slot
-		self.events = []
+		self.events = events
 		self.parameters = parameters
-		self.slotted_objects = []
+		self.slotted_objects = slotted_objects
 
 	def to_xml(self) -> Element:
 		xml_object = Element('object')

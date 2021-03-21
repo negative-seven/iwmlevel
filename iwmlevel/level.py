@@ -9,16 +9,16 @@ class Level:
 	SCREEN_WIDTH = 800
 	SCREEN_HEIGHT = 608
 
-	def __init__(self, name = '', size = (1, 1), game_version = 76):
+	def __init__(self, name = '', size = (1, 1), *, version = 76, screen_lock = False, music_id = 0):
 		self.name = name
-		self.version = game_version
+		self.version = version
 		self.block_0_graphics = GraphicsData()
 		self.block_1_graphics = GraphicsData()
 		self.background_graphics = GraphicsData()
 		self.spike_graphics = GraphicsData()
 		self.size = size
-		self.screen_lock = False
-		self.music_id = 0
+		self.screen_lock = screen_lock
+		self.music_id = music_id
 		self.objects = []
 
 	def get_pixel_width(self) -> int:
