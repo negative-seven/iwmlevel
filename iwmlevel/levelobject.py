@@ -5,7 +5,7 @@ from .event import Event
 
 
 class LevelObject:
-	def __init__(self, type_id: int, x = 0, y = 0, parameters = None, *, slot = None, events = None,
+	def __init__(self, type_id: int, x = 0, y = 0, parameters = None, *, slot = None, sprite_angle = None, events = None,
 				 slotted_objects=None):
 		if parameters is None:
 			parameters = dict()
@@ -18,6 +18,7 @@ class LevelObject:
 		self.x = x
 		self.y = y
 		self.slot = slot
+		self.rotation = sprite_angle
 		self.events = events
 		self.parameters = parameters
 		self.slotted_objects = slotted_objects
@@ -29,6 +30,8 @@ class LevelObject:
 		xml_object.attrib['y'] = str(self.y)
 		if self.slot is not None:
 			xml_object.attrib['slot'] = str(self.slot)
+		if self.rotation is not None:
+			xml_object.attrib['sprite_angle'] = str(self.rotation)
 
 		for event in self.events:
 			xml_object.append(event.to_xml())
@@ -61,6 +64,8 @@ class LevelObject:
 				level_object.y = int(value)
 			elif key == 'slot':
 				level_object.slot = int(value)
+			elif key == 'sprite_angle':
+				level_object.rotation = int(value)
 
 		for child in xml_object:
 			if child.tag == 'event':
