@@ -3,7 +3,7 @@ import struct
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
-from .graphics_data import GraphicsData
+from .graphicsdata import GraphicsData
 from .levelobject import LevelObject
 
 

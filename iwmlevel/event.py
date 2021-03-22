@@ -2,20 +2,21 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
 from .action import Action
+from .eventtype import EventType
 
 
 class Event:
-	def __init__(self, id: int, parameters = None):
+	def __init__(self, event_type: EventType, parameters = None):
 		if parameters is None:
 			parameters = dict()
 
-		self.id = id
+		self.type = event_type
 		self.actions = []
 		self.parameters = parameters
 
 	def to_xml(self) -> Element:
 		xml_event = Element('event')
-		xml_event.attrib['eventIndex'] = str(self.id)
+		xml_event.attrib['eventIndex'] = str(int(self.type))
 
 		for key, value in self.parameters.items():
 			xml_parameter = SubElement(xml_event, 'param')
@@ -33,7 +34,7 @@ class Event:
 	@staticmethod
 	def from_xml(xml_event: Element):
 		event = Event(0)
-		event.id = int(xml_event.attrib['eventIndex'])
+		event.type = EventType(int(xml_event.attrib['eventIndex']))
 
 		for child in xml_event:
 			if child.tag == 'param':

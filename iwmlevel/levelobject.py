@@ -2,10 +2,11 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
 from .event import Event
+from .levelobjecttype import LevelObjectType
 
 
 class LevelObject:
-	def __init__(self, type_id: int, x = 0, y = 0, parameters = None, *, slot = None, sprite_angle = None, events = None,
+	def __init__(self, object_type: LevelObjectType, x = 0, y = 0, parameters = None, *, slot = None, sprite_angle = None, events = None,
 				 slotted_objects=None):
 		if parameters is None:
 			parameters = dict()
@@ -14,7 +15,7 @@ class LevelObject:
 		if slotted_objects is None:
 			slotted_objects = []
 
-		self.type_id = type_id
+		self.type = object_type
 		self.x = x
 		self.y = y
 		self.slot = slot
@@ -25,7 +26,7 @@ class LevelObject:
 
 	def to_xml(self) -> Element:
 		xml_object = Element('object')
-		xml_object.attrib['type'] = str(self.type_id)
+		xml_object.attrib['type'] = str(int(self.type))
 		xml_object.attrib['x'] = str(self.x)
 		xml_object.attrib['y'] = str(self.y)
 		if self.slot is not None:
@@ -57,7 +58,7 @@ class LevelObject:
 
 		for key, value in xml_object.attrib.items():
 			if key == 'type':
-				level_object.type_id = int(value)
+				level_object.type = LevelObjectType(int(value))
 			elif key == 'x':
 				level_object.x = int(value)
 			elif key == 'y':
