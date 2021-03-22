@@ -20,7 +20,7 @@ class Event:
 		for key, value in self.parameters.items():
 			xml_parameter = SubElement(xml_event, 'param')
 			xml_parameter.attrib['key'] = key
-			xml_parameter.attrib['val'] = str(value)
+			xml_parameter.attrib['val'] = f'{value:g}'
 
 		for action in self.actions:
 			xml_event.append(action.to_xml())
@@ -37,7 +37,7 @@ class Event:
 
 		for child in xml_event:
 			if child.tag == 'param':
-				event.parameters[child.attrib['key']] = int(child.attrib['val'])
+				event.parameters[child.attrib['key']] = float(child.attrib['val'])
 			elif child.tag == 'event':
 				event.actions.append(Action.from_xml(child))
 

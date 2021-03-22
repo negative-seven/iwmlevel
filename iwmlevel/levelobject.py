@@ -36,7 +36,7 @@ class LevelObject:
 		for key, value in self.parameters.items():
 			xml_parameter = SubElement(xml_object, 'param')
 			xml_parameter.attrib['key'] = key
-			xml_parameter.attrib['val'] = str(value)
+			xml_parameter.attrib['val'] = f'{value:g}'
 
 		for slotted_object in self.slotted_objects:
 			xml_slotted_object = slotted_object.to_xml()
@@ -66,7 +66,7 @@ class LevelObject:
 			if child.tag == 'event':
 				level_object.events.append(Event.from_xml(child))
 			elif child.tag == 'param':
-				level_object.parameters[child.attrib['key']] = int(child.attrib['val'])
+				level_object.parameters[child.attrib['key']] = float(child.attrib['val'])
 			elif child.tag == 'obj':
 				level_object.slotted_objects.append(LevelObject.from_xml(child))
 

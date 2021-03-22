@@ -17,7 +17,7 @@ class Action:
 		for key, value in self.parameters.items():
 			xml_parameter = SubElement(xml_action, 'param')
 			xml_parameter.attrib['key'] = key
-			xml_parameter.attrib['val'] = str(value)
+			xml_parameter.attrib['val'] = f'{value:g}'
 
 		return xml_action
 
@@ -31,7 +31,7 @@ class Action:
 
 		for child in xml_action:
 			if child.tag == 'param':
-				action.parameters[child.attrib['key']] = int(child.attrib['val'])
+				action.parameters[child.attrib['key']] = float(child.attrib['val'])
 
 		return action
 
